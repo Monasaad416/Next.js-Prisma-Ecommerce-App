@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  description String
+  images      String[]
+  slug        String   @unique
+  visible     Boolean  @default(true)
+  isNew       Boolean  @default(true)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  cartItems CartItem[]
+  orderItems OrderItem[]
+}
+
+model Category {
+  id      String  @id @default(cuid())
+  name    String
+  slug    String  @unique
+  image   String?
+  isTopCategory     Boolean @default(false)
+  visible Boolean @default(true)
+
+  products Product[]
+}
+
+
+model Cart {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  items      CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+
+  quantity   Int      @default(1)
+
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([cartId, productId])
+}
+
+enum OrderStatus {
+  PENDING
+  PENDING_PAYMENT
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+model Order {
+  id          String      @id @default(cuid())
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  status      OrderStatus @default(PENDING)
+
+  subtotal    Decimal     @db.Decimal(10,2)
+  shipping    Decimal     @db.Decimal(10,2)
+  total       Decimal     @db.Decimal(10,2)
+
+  items       OrderItem[]
+
+  customerName String?
+  email        String?
+  phone        String?
+
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  country      String?
+  postalCode   String?
+
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  paymentMethod String?
+
+  stripeSessionId String?
+  stripePaymentIntentId String?
+
+
+  @@index([status])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+
+  createdAt   DateTime @default(now())
+
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+
+  quantity    Int
+
+  // Snapshot data
+  productName String
+  productSlug String
+  productImage String?
+
+  unitPrice   Decimal  @db.Decimal(10,2)
+  lineTotal   Decimal  @db.Decimal(10,2)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+
+model User {
+  id          String   @id @default(cuid())
+
+  name     String
+  email    String @unique
+  phone    String?
+  password String
+  role     String @default("USER")
+  image    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+
+  orders Order[]
+  
+
+}
