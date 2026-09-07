@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler, type Resolver } from "react-hook-form";
 import { AuthInputs } from "../../../types/AuthInputs";
 import { loginSchema } from "@/lib/zod/loginSchema";
 import { registerSchema } from "@/lib/zod/registerSchema";
@@ -11,29 +11,24 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { registerUser } from "@/components/Register/page";
 
-
-
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const {update: updateSession } = useSession();
+  const { update: updateSession } = useSession();
+  const router = useRouter();
 
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<AuthInputs>({
+    resolver: zodResolver(
+      isLogin ? loginSchema : registerSchema,
+    ) as Resolver<AuthInputs>,
+  });
 
-
-const {
-  register,
-  handleSubmit,
-  setError,
-  clearErrors,
-  formState: { errors },
-} = useForm<AuthInputs>({
-  resolver: zodResolver(
-    isLogin ? loginSchema : registerSchema
-  ) ,
-});
-
-
-const router = useRouter();
-const onSubmit: SubmitHandler<AuthInputs> = async (data) => {
+  const onSubmit: SubmitHandler<AuthInputs> = async (data) => {
   try {
     clearErrors();
 

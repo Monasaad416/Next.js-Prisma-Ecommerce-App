@@ -9,9 +9,10 @@ export const registerSchema = z
       .max(50, "Name is too long"),
 
     email: z
-      .email("Please enter a valid email address")
+      .string()
       .trim()
-      .toLowerCase(),
+      .toLowerCase()
+      .email("Please enter a valid email address"),
 
     password: z
       .string()
