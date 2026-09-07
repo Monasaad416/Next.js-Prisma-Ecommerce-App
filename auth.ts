@@ -10,7 +10,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signOut: '/auth',
   },
   session: {
+    strategy: "jwt",
   },
+  secret: process.env.AUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
