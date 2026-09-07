@@ -4,6 +4,7 @@ import CartIcon from "./cartIcon";
 import { ThemeToggle } from "./theme-toggle";
 import MobileNav from "./mobile-nav";
 import AuthButtons from "./AuthButtons";
+import BrandLogo from "./BrandLogo";
 
 const links = [
   { href: "/", label: "Home" },
@@ -19,12 +20,7 @@ const Navbar = () => {
       <div className="page-shell flex h-16 items-center justify-between gap-4 sm:h-18">
         <div className="flex items-center gap-3">
           <MobileNav />
-          <Link
-            href="/"
-            className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl"
-          >
-            E-Comm
-          </Link>
+          <BrandLogo priority />
         </div>
 
         <nav className="hidden items-center gap-1 md:flex">

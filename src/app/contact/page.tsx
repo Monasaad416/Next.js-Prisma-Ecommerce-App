@@ -6,7 +6,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with the E-Comm team.",
+  description: "Get in touch with the Furnia team.",
 };
 
 const details = [

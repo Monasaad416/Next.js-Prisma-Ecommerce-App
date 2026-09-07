@@ -30,8 +30,8 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "E-Comm — Home Furniture",
-    template: "%s | E-Comm",
+    default: "Furnia — Home Furniture",
+    template: "%s | Furnia",
   },
   description:
     "Shop chairs, tables, and sofas with clear pricing and secure checkout.",
@@ -39,18 +39,26 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "E-Comm — Home Furniture",
+    title: "Furnia — Home Furniture",
     description:
       "Shop chairs, tables, and sofas with clear pricing and secure checkout.",
     type: "website",
     url: siteUrl,
-    siteName: "E-Comm",
+    siteName: "Furnia",
   },
   twitter: {
     card: "summary_large_image",
-    title: "E-Comm — Home Furniture",
+    title: "Furnia — Home Furniture",
     description:
       "Shop chairs, tables, and sofas with clear pricing and secure checkout.",
+  },
+  icons: {
+    icon: [
+      { url: "/icon", type: "image/png" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.png",
+    apple: [{ url: "/apple-icon", type: "image/png" }],
   },
 };
 

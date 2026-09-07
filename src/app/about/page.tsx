@@ -6,7 +6,7 @@ import BreadCrumbs from "@/components/breadCrumbs";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Learn about E-Comm — curated home furniture and a clearer shopping experience.",
+    "Learn about Furnia — curated home furniture and a clearer shopping experience.",
 };
 
 const values = [
@@ -37,13 +37,13 @@ export default function AboutPage() {
               ]}
             />
             <p className="font-heading mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-              E-Comm
+              Furnia
             </p>
             <h1 className="font-heading mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
               Furniture for calmer homes.
             </h1>
             <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              E-Comm started as a simple idea: fewer distractions, better product
+              Furnia started as a simple idea: fewer distractions, better product
               pages, and furniture shopping that respects your time.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">

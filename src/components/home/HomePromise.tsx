@@ -35,7 +35,7 @@ export default function HomePromise() {
               href="/about"
               className="mt-6 inline-flex text-sm font-semibold text-primary transition-opacity hover:opacity-80"
             >
-              About E-Comm →
+              About Furnia →
             </Link>
           </div>
 

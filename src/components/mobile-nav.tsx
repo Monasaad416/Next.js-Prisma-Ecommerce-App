@@ -10,6 +10,7 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import AuthButtons from "./AuthButtons";
+import BrandLogo from "./BrandLogo";
 
 const links = [
   { href: "/", label: "Home" },
@@ -36,13 +37,13 @@ const MobileNav = () => {
 
         <SheetContent side="left" className="w-[280px]">
           <SheetHeader>
-            <SheetTitle className="font-heading text-left text-xl font-bold">
-              E-Comm
+            <SheetTitle className="text-left">
+              <BrandLogo size="sm" />
             </SheetTitle>
           </SheetHeader>
 
           <nav className="mt-8 flex flex-col gap-1 px-2">
-            {links.map((link) => (
+              {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

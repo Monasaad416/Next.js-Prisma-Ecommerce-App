@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "./BrandLogo";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -7,7 +8,7 @@ export default function Footer() {
     <footer className="mt-auto border-t border-border/70 bg-card/60">
       <div className="page-shell grid gap-8 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <p className="font-heading text-2xl font-bold tracking-tight">E-Comm</p>
+          <BrandLogo size="lg" />
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
             Curated products, clear pricing, and a checkout flow built for speed.
           </p>
@@ -46,7 +47,7 @@ export default function Footer() {
 
       <div className="border-t border-border/60">
         <div className="page-shell flex flex-col gap-2 py-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>© {year} E-Comm. All rights reserved.</span>
+          <span>© {year} Furnia. All rights reserved.</span>
           <span>Secure checkout · Fast delivery</span>
         </div>
       </div>

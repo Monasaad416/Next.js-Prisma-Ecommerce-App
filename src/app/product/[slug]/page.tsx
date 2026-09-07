@@ -79,7 +79,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     sku: product.id,
     brand: {
       "@type": "Brand",
-      name: "E-Comm",
+      name: "Furnia",
     },
     offers: {
       "@type": "Offer",

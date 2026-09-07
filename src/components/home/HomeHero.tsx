@@ -7,7 +7,7 @@ export default function HomeHero() {
       <div className="page-shell grid items-center gap-10 py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16 lg:py-20">
         <div>
           <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-            E-Comm Furniture
+            Furnia Furniture
           </p>
           <h1 className="font-heading mt-4 max-w-xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Furniture that feels at home.

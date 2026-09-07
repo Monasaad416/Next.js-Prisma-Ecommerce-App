@@ -117,7 +117,7 @@ const onSubmit: SubmitHandler<AuthInputs> = async (data) => {
     <div className="flex min-h-[70vh] items-center justify-center px-4 py-12">
       <div className="surface-card w-full max-w-md p-8">
         <p className="font-heading text-center text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-          E-Comm
+          Furnia
         </p>
         <h1 className="font-heading mt-3 text-center text-3xl font-bold tracking-tight">
           {isLogin ? "Welcome back" : "Create account"}
@@ -126,7 +126,7 @@ const onSubmit: SubmitHandler<AuthInputs> = async (data) => {
         <p className="mb-6 mt-2 text-center text-sm text-muted-foreground">
           {isLogin
             ? "Sign in to continue shopping"
-            : "Join E-Comm to track orders and checkout faster"}
+            : "Join Furnia to track orders and checkout faster"}
         </p>
 
         <form

@@ -8,6 +8,7 @@ import { getPageNumber, getVisiblePages } from "../getPageInfo";
 import { prisma } from "../../../lib/prisma";
 
 
+
 export default async function CategoriesContent(props: {
   searchParams?: PageSearchParams;
   sorting?:string;
