@@ -2,89 +2,11 @@
 
 import { cookies } from "next/headers";
 import { Prisma } from "../../generated/prisma/client";
-import { IProductDetail } from "../../interfaces/ProductDetails";
-import { IProductType } from "../../interfaces/ProductType";
 import { prisma } from "../../lib/prisma";
 import { serializeCart, SerializedCart } from "./mappers/cartMapper";
-import { mapProducts } from "./mappers/productMapper";
 
-
-
-export async function getProductBySlug(slug: string): Promise<IProductDetail | null> {
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
-
-  if (!product) {
-    // throw new Error(`Product with slug "${slug}" not found`);
-    return null // to get 404 not found with notFound()
-  }
-
-
-  return {
-    id: product.id,
-    name: product.name,
-    slug: product.slug,
-    price: Number(product.price),
-    stock: product.stock,
-    description: product.description,
-    image: product.images[0] || "",
-    images: product.images,
-    visible: product.visible,
-    categoryId: product.categoryId,
-    category: product.category?.name ?? "",
-    isNew: product.isNew ?? false, // default to false if not set
-  };
-}
-
-
-export async function getProductByCatSlug(slug: string): Promise<IProductType[] | null> {
-  const products = await prisma.product.findMany({
-    where: { category: { slug } },
-    include: { category: true },
-  });
-
-  if (products.length === 0) {
-    return null;
-  }
-
-  return mapProducts(products);
-}
-
-export async function resolveSearchPath(query: string): Promise<string> {
-  const trimmedQuery = query.trim();
-
-  if (!trimmedQuery) {
-    return "/search";
-  }
-
- const category = await prisma.category.findFirst({
-  where: {
-    OR: [
-      {
-        slug: {
-          contains: trimmedQuery,
-          mode: "insensitive",
-        },
-      },
-      {
-        name: {
-          contains: trimmedQuery,
-          mode: "insensitive",
-        },
-      },
-    ],
-  },
-  select: { slug: true },
-});
-
-  if (category) {
-    return `/search/byCategory/${category.slug}`;
-  }
-
-  return `/search?query=${encodeURIComponent(trimmedQuery)}`;
-}
+export { getProductBySlug } from "./products/getProduct";
+export { getProductByCatSlug, resolveSearchPath } from "./productActions";
 
 export type CartWithProducts = Prisma.CartGetPayload<{
   include: {

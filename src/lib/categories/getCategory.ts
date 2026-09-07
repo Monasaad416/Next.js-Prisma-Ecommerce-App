@@ -73,3 +73,79 @@ export const getProductsByCategory = unstable_cache(
   ["products-by-category"],
   { revalidate: CATEGORY_REVALIDATE_SECONDS, tags: ["products", "categories"] },
 );
+
+/** Partial match used by search → byCategory routing */
+export const findCategoryMatch = unstable_cache(
+  async (query: string) => {
+    const trimmed = query.trim();
+    if (!trimmed) return null;
+
+    return prisma.category.findFirst({
+      where: {
+        OR: [
+          { slug: { contains: trimmed, mode: "insensitive" } },
+          { name: { contains: trimmed, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        image: true,
+        visible: true,
+        isTopCategory: true,
+      },
+    });
+  },
+  ["category-match"],
+  { revalidate: CATEGORY_REVALIDATE_SECONDS, tags: ["categories"] },
+);
+
+export const getCategoriesPage = unstable_cache(
+  async (page: number, pageSize: number, sorting: string) => {
+    const where = sorting
+      ? {
+          name: {
+            contains: sorting,
+            mode: "insensitive" as const,
+          },
+        }
+      : {};
+
+    const skip = (page - 1) * pageSize;
+
+    const [dbCategories, totalCategories] = await Promise.all([
+      prisma.category.findMany({
+        where,
+        skip,
+        take: pageSize,
+        orderBy: { id: "desc" },
+      }),
+      prisma.category.count({ where }),
+    ]);
+
+    return {
+      totalCategories,
+      categories: dbCategories.map((category) => ({
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        visible: category.visible,
+        image: category.image || "",
+        isTopCategory: category.isTopCategory ?? false,
+      })),
+    };
+  },
+  ["categories-page"],
+  { revalidate: CATEGORY_REVALIDATE_SECONDS, tags: ["categories"] },
+);
+
+export const getSitemapCategorySlugs = unstable_cache(
+  async () => {
+    return prisma.category.findMany({
+      select: { slug: true },
+    });
+  },
+  ["sitemap-category-slugs"],
+  { revalidate: CATEGORY_REVALIDATE_SECONDS, tags: ["categories"] },
+);

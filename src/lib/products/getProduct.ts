@@ -60,3 +60,91 @@ export const getHomeProducts = unstable_cache(
   ["home-products"],
   { revalidate: PRODUCT_REVALIDATE_SECONDS, tags: ["products"] },
 );
+
+export const searchProductsPage = unstable_cache(
+  async (page: number, pageSize: number, query: string, limit?: number) => {
+    const where = query
+      ? {
+          OR: [
+            {
+              name: {
+                contains: query,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              description: {
+                contains: query,
+                mode: "insensitive" as const,
+              },
+            },
+          ],
+        }
+      : {};
+
+    const skip = limit ? 0 : (page - 1) * pageSize;
+
+    const [dbProducts, totalProducts] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        include: { category: true },
+        skip,
+        take: pageSize,
+        orderBy: { id: "desc" },
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    return {
+      totalProducts,
+      products: mapProducts(dbProducts),
+    };
+  },
+  ["search-products-page"],
+  { revalidate: PRODUCT_REVALIDATE_SECONDS, tags: ["products"] },
+);
+
+export const getProductsByCategoryPage = unstable_cache(
+  async (page: number, pageSize: number, categorySlug: string) => {
+    const where = categorySlug
+      ? {
+          category: {
+            slug: categorySlug,
+          },
+        }
+      : {};
+
+    const skip = (page - 1) * pageSize;
+
+    const [dbProducts, totalProducts] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        include: { category: true },
+        skip,
+        take: pageSize,
+        orderBy: { id: "desc" },
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    return {
+      totalProducts,
+      products: mapProducts(dbProducts),
+    };
+  },
+  ["products-by-category-page"],
+  { revalidate: PRODUCT_REVALIDATE_SECONDS, tags: ["products", "categories"] },
+);
+
+export const getSitemapProducts = unstable_cache(
+  async () => {
+    return prisma.product.findMany({
+      select: {
+        slug: true,
+        updatedAt: true,
+      },
+    });
+  },
+  ["sitemap-products"],
+  { revalidate: PRODUCT_REVALIDATE_SECONDS, tags: ["products"] },
+);

@@ -2,8 +2,8 @@ import BreadCrumbs from "@/components/breadCrumbs";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import ProductCardSkeleton from "../../../ProductCardSkeleton";
-import { prisma } from "../../../../../lib/prisma";
 import FilterByCategory from "@/lib/categories/FilterByCategory";
+import { findCategoryMatch } from "@/lib/categories/getCategory";
 import type { SearchByCategoryPageProps } from "../../../../../types/PageProps";
 
 export default async function SearchByCategoryBySlugPage({
@@ -12,24 +12,7 @@ export default async function SearchByCategoryBySlugPage({
 }: SearchByCategoryPageProps) {
   const { slug } = await params;
 
-  const category = await prisma.category.findFirst({
-    where: {
-      OR: [
-        {
-          slug: {
-            contains: slug,
-            mode: "insensitive",
-          },
-        },
-        {
-          name: {
-            contains: slug,
-            mode: "insensitive",
-          },
-        },
-      ],
-    },
-  });
+  const category = await findCategoryMatch(slug);
 
   if (!category) {
     notFound();
@@ -50,7 +33,7 @@ export default async function SearchByCategoryBySlugPage({
       <Suspense fallback={<ProductCardSkeleton />}>
         <FilterByCategory
           searchParams={searchParams}
-          categorySlug={slug}
+          categorySlug={category.slug}
           showHeader={false}
         />
       </Suspense>

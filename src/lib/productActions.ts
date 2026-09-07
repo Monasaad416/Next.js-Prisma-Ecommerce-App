@@ -1,21 +1,29 @@
-'use server'
+"use server";
 
+import { unstable_cache } from "next/cache";
 import { IProductType } from "../../interfaces/ProductType";
-import { prisma } from "../../lib/prisma";
 import { mapProducts } from "./mappers/productMapper";
+import { prisma } from "../../lib/prisma";
+import { findCategoryMatch } from "./categories/getCategory";
 
-export async function getProductByCatSlug(slug: string): Promise<IProductType[] | null> {
-  const products = await prisma.product.findMany({
-    where: { category: { slug } },
-    include: { category: true },
-  });
+const REVALIDATE_SECONDS = 60;
 
-  if (products.length === 0) {
-    return null;
-  }
+export const getProductByCatSlug = unstable_cache(
+  async (slug: string): Promise<IProductType[] | null> => {
+    const products = await prisma.product.findMany({
+      where: { category: { slug } },
+      include: { category: true },
+    });
 
-  return mapProducts(products);
-}
+    if (products.length === 0) {
+      return null;
+    }
+
+    return mapProducts(products);
+  },
+  ["product-actions-by-cat-slug"],
+  { revalidate: REVALIDATE_SECONDS, tags: ["products", "categories"] },
+);
 
 export async function resolveSearchPath(query: string): Promise<string> {
   const trimmedQuery = query.trim();
@@ -24,25 +32,7 @@ export async function resolveSearchPath(query: string): Promise<string> {
     return "/search";
   }
 
- const category = await prisma.category.findFirst({
-  where: {
-    OR: [
-      {
-        slug: {
-          contains: trimmedQuery,
-          mode: "insensitive",
-        },
-      },
-      {
-        name: {
-          contains: trimmedQuery,
-          mode: "insensitive",
-        },
-      },
-    ],
-  },
-  select: { slug: true },
-});
+  const category = await findCategoryMatch(trimmedQuery);
 
   if (category) {
     return `/search/byCategory/${category.slug}`;
@@ -50,15 +40,3 @@ export async function resolveSearchPath(query: string): Promise<string> {
 
   return `/search?query=${encodeURIComponent(trimmedQuery)}`;
 }
-
-
-
-
-
-
-
-
-
-
-
-
