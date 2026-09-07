@@ -9,6 +9,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["db_DATABASE_URL"],
+    url: process.env["furnia_DATABASE_URL"],
   },
 });
